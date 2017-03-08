@@ -1,0 +1,62 @@
+/* @override http://localhost:3000/stylesheets/map.css */
+
+/* map.css
+ * This file provides css styles.
+ */
+body {
+	font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	background-color: #042c77;
+}
+h1, h2, h3, h4 {
+	color: #fff;
+	margin: 0.2em;
+}
+
+#map {
+	height: 364px;
+}
+.neutral {
+	border: 12px solid #888888;
+	border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+}
+
+.safe {
+	border: 12px solid #00ff00;
+	border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+}
+
+.notbad {
+	border: 12px solid #ffe900;
+	border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+}
+
+.danger {
+	border: 12px solid #ff0000;
+	border-radius: 12px;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+}
+
+#stats {
+	border-radius: 50%;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	background-color: #000; /*#1e5886;*/
+	height: 48px;
+	width: 48px;
+	position: relative;
+	bottom: 40px;
+	left: calc(50% - 24px); /*50%;*/
+	z-index: 99;
+	text-align: center;
+	line-height: 48px;
+	font-size: 36px;
+	font-weight: 600;
+	color: #fff;
+}

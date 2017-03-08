@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>
+			SafetyPulse
+		</title>
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="stylesheets/style.css" type="text/css">
+	</head>
+	<body>
+		<div id="pulsebg" class="container">
+			<div>
+			<table id="content">
+			    <tr>
+			        <td id="contenttext" valign="top"><font size="200%"><a href="index.html">SafetyPulse</a></font>, from <a href="http://www.cloudant.com">IBM Cloudant</a>, is a mobile app for Boston, MA USA that constantly evaluates the safety of your surroundings to keep you out of trouble areas. The app uses crime statistics combined with your location and the direction you’re heading to gauge the safety level of where you are, and where you’ll soon be. You’ll get a gentle warning when your environment is a little risky, and when you’re heading towards a really high-crime area you get a text message so you can concentrate on where you are, instead of looking at your phone. Set it up once and forget it. SafetyPulse, running in the cloud, will always have your back. <a href="http://www.rajsingh.org/safetypulse.mp4" target="_new">Check out the movie</a>.</p>
+				<p><a href="index.html">SafetyPulse</a> is good for more than just monitoring immediate personal safety. Have your kids use it with your mobile phone number and you instantly get notified when they are in a dangerous area. Or you could use it as an aid when scouting a location for a new business. For example, in one of the provided use cases, Navtej is an aspiring restaurant owner. He's a superb chef, but doesn't understand all the business aspects of starting a restaurant. He could use SafetyPulse when looking at potential spaces for his new restaurant to tell if the area will deter customers from coming. Tourists and joggers will also appreciate this service.</td>
+            <td>
+                <p class="caption">
+                   <img src="images/safetyrating7.jpg" /><br/>
+                    An app that knows crime history</p>
+                <p class="caption">
+                   <img src="images/sms_screen.jpg" /><br/>
+                    Get a text message when approaching an unsafe area</p>
+            </td>
+			    </tr>
+			</table>
+			</div>
+			<div id="darkbg">
+				<table>
+					<tr>
+						<td id="darkbgleft">
+						<img src="images/bluemix_tiles_sm.jpg" /><br/><br/>
+						IBM Information Management<br/>Cloudant Geo team:<br/>
+						Raj Singh (rrsingh@us.ibm.com)<br/>Norman Barker<br/>
+						Chris Glew<br/>
+						</td>
+						<td id="darkbgright">
+                            <p></p><a href="index.html">SafetyPulse</a> was developed with <a href="http://bluemix.net/">IBM BlueMix</a> and <a href="http://hub.jazz.net">IBM DevOps Services</a>. It is written in Javascript and uses Node.js as a middle tier with IBM Cloudant database services with enhanced geospatial query. To determine crime rates, it uses open data provided by the City of Boston and stored in Cloudant. Crime data is harvested nightly from the City of Boston's open data service, which leverages a common open data publishing system from Socrata, so any city that uses Socrata could quickly be added to a real SafetyPulse service (note that this demo app only sends SMS messages to the developer). To communicate with users on their mobile devices, SafetyPulse uses Twillio for Bluemix to send safety alerts via SMS.</p>
+						<p><br/>
+                            App: <a href="http://safetypulse.mybluemix.net">safetypulse.mybluemix.net</a><br/>
+                            Video: <a href="http://rajsingh.org/safetypulse.mp4">rajsingh.org/safetypulse.mp4</a><br/>
+						Code: <a href="http://hub.jazz.net/project/rrsingh/safetypulse/">hub.jazz.net/project/rrsingh/safetypulse/</a>
+						</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>

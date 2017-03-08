@@ -1,0 +1,54 @@
+/* @override http://localhost:3000/stylesheets/map.css */
+
+body {
+	font-family: "Source Sans Pro", "Helvetica Neue Thin", Arial, sans-serif;
+    color: #333;
+	margin: 0px;
+}
+
+.caption {
+    font-size: 75%;
+    line-height: 1em;
+    font-style: italic;
+}
+
+#content {
+	line-height: 1.5em;
+    padding-top: 2em;
+    padding-left: 25%;
+    padding-right: 15%;
+}
+
+#darkbg {
+	color: #ffffff;
+	background-color: #3b4b54;
+	width: 100%;
+}
+
+#darkbgright {
+	padding: 2em;
+	padding-right: 8em;
+	vertical-align: top;
+	line-height: 1.5em;
+}
+
+#darkbgleft {
+	font-size: 75%;
+	padding-top: 2em;
+	padding-left: 4em;
+}
+
+a {
+	text-decoration: none;
+    color: inherit;
+}
+
+a:hover {
+	text-decoration: underline;
+    color: #ff0000;
+}
+
+#contenttext {
+    padding-right: 4em;
+    vertical-align: bottom
+}

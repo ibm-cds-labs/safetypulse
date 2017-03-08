@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>SafetyPulse</title>
+		<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  		<script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+	  	<link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' />
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+		<script src="js/L.Control.Locate.min.js" charset="utf-8"></script>
+		<link rel="stylesheet" href="js/L.Control.Locate.min.css" />
+		<link rel="stylesheet" href="stylesheets/map.css" type="text/css" />
+	</head>
+	<body>
+	<div id="pulsebg" class="container">
+		<div>
+			<a href="overview.html"><img src="images/cloudant_ibm.png" style="float:right"></a>
+			<h2>SafetyPulse</h2>
+		</div>
+		<div id="map" class="neutral"></div>
+		<div id="stats" class="neutral">
+			<span id="stat">-</span>
+		</div>
+	</div>
+	<script>
+	var last_lon = 0;
+	var last_lat = 0;
+	var path = [ [0,0], [0,0], [0,0], [0,0] ];
+	var watchID = null;
+	var crimeslayer = null;
+	var crimestyle = {
+		'radius': 8, 
+		'fillColor': '#ff0000', 
+		'fillOpacity': 0.25, 
+		'color': '#ff0000'
+	};
+	var LAT_CONST = 42.35950634; //state st
+	var LON_CONST = -71.05352956;
+	// var LAT_CONST = 42.331995; //roxbury
+	// var LON_CONST = -71.0846516;
+	// var LAT_CONST = 42.3564505; // beacon hill
+	// var LON_CONST = -71.0739335;
+	
+	function startWatch() {
+		watchID = navigator.geolocation.watchPosition(doWatch, watchError);
+    // lc.locate();
+	}
+
+	function doWatch(position) {
+		var lon = Number(Math.round(position.coords.longitude+'e'+5)+'e-'+5);
+		var lat = Number(Math.round(position.coords.latitude+'e'+5)+'e-'+5);
+		
+		if ( (lon==path[3][0]) && (lat==path[3][1]) ) return null;
+		path.shift();
+		path.push( [lon, lat] );
+		
+		// Send position to server to get safety rating
+		var q = "/querycrimes?lon=" + lon + "&lat=" + lat;
+		
+		$.getJSON(q, function(data) {
+			console.log('called '+q);
+		})
+		.done(function(data) {
+			if ( !data.features ) { //if ( !data.rows ) {
+				console.log("Error retrieving features");
+				return;
+			}
+			var rating = 0;
+			//-- Let's build a safety rating algorithm...
+			for (var i = 0; i < data.features.length; i++) {
+				crime = data.features[i];
+				// // FBI unified crime code is the first 2 digits of main_crimecode
+				// var codestr = crime.properties.main_crimecode.substr(0,2); //crime.properties.doc.properties.main_crimecode.substr(0, 2);
+				// // If crime code isn't numeric then it can't be classified, so skip it
+				// if ( !$.isNumeric(codestr) ) continue;
+				// var code = parseInt(codestr);
+				// var crating = ( 50 - code*2 ) / 500;
+				// rating += crating;
+				if (crime.properties.CDSNV){
+					rating += 0.1;
+				} else if (crime.properties.CDSSTREET) {
+					rating += 1.0;
+				} else {
+					rating += 0.5;
+				}
+			} // end safety rating algorithm
+			console.log("RATING: " + rating);
+			
+			rating = Math.round(rating);
+			if ( rating > 10 ) rating = 10;
+			$('#stat').html(rating);
+			if ( rating < 5 ) {
+				$('#map').toggleClass("safe", true);
+				$('#map').toggleClass("notbad danger", false);
+				$('#stats').toggleClass("safe", true);
+				$('#stats').toggleClass("notbad danger", false);
+			} else if ( rating < 8 ) {
+				$('#map').toggleClass("notbad", true);
+				$('#map').toggleClass("safe danger", false);
+				$('#stats').toggleClass("notbad", true);
+				$('#stats').toggleClass("safe danger", false);
+			} else { // bad news!
+				$('#map').toggleClass("danger", true);
+				$('#map').toggleClass("notbad safe", false);
+				$('#stats').toggleClass("danger", true);
+				$('#stats').toggleClass("notbad safe", false);
+			}
+			
+			map.removeLayer(crimeslayer);
+			crimeslayer = L.geoJson(null, {
+				atribution: 'IBM | Cloudant', 
+				pointToLayer: function(feature, latlng) {
+					return L.circleMarker(latlng, crimestyle);
+				}
+			}).addTo(map);
+			for (var i = 0; i < data.features.length; i++) { //data.rows.length; i++) {
+				crimeslayer.addData(data.features[i]);//data.rows[i].properties.doc);
+			}
+		})
+		.fail(function(jqxhr, textstatus, err) {
+			if ( !data.features ) {
+				console.log("Error retrieving features: " + err);
+				console.log("Status: " + textstatus);
+			}
+		});
+	}
+
+	function watchError(err) {
+		alert('Error' + err.code + ' msg: ' + err.message);
+	}
+
+	function stopWatch() {
+		if ( watchID )
+			navigator.geolocation.clearWatch(watchID);
+	}
+
+	var map = L.map('map', {
+		attributionControl: false,
+		center: L.latLng(LAT_CONST, LON_CONST), 
+		zoom: 18
+	});
+  
+  // basemap
+  L.mapbox.accessToken = '<<get it from here https://www.mapbox.com/studio/signup/';
+  L.mapbox.tileLayer('mapbox.streets').addTo(map);
+	
+	crimeslayer = L.geoJson(null, {
+		atribution: 'IBM | Cloudant', 
+		pointToLayer: function(feature, latlng) {
+			return L.circleMarker(latlng, crimestyle);
+		}
+	}).addTo(map);
+
+	L.control.locate().addTo(map);
+	
+	startWatch();
+	// doWatch(); // for static location debug
+	</script>
+	</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>SafetyPulse</title>
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<link rel="stylesheet" href="stylesheets/map.css" type="text/css" />
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" type="text/css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+</head>
+	<body>
+	<div id="pulsebg" class="container">
+		<div>
+			<img src="images/cloudant_ibm.png" style="float:right">
+			<h2>SafetyPulse</h2>
+		</div>
+		<div id="map" class="safe"></div>
+		<div id="stats" class="safe">
+			<span id="stat">0</span>
+		</div>
+	</div>
+	<script>
+	var last_lon = 0;
+	var last_lat = 0;
+	var watchID = null;
+	var crimeslayer = null;
+	
+	function startWatch() {
+		watchID = navigator.geolocation.watchPosition(doWatch, watchError);
+		lc.locate();
+	}	
+	function doWatch(position) {
+		var lon = Number(Math.round(position.coords.longitude+'e'+4)+'e-'+4);
+		var lat = Number(Math.round(position.coords.latitude+'e'+4)+'e-'+4);
+		if ( (lon==last_lon) && (lat==last_lat) ) return null;
+		if ( (Math.abs(lon-last_lon)<5) || (Math.abs(lat-last_lat)<5) ) return null;
+		last_lon = lon;
+		last_lat = lat;
+		
+		// Send position to server to get safety rating
+		var q = "https://rajsingh.cloudant.com/crimetest/_design/geodd/_geo/geoidx?radius=100";
+		q += "&lon=" + lon + "&lat=" + lat + "&relation=contains&limit=200&include_docs=true";
+		$.getJSON(q, function(data) {
+			console.log('called '+q);
+		})
+		.done(function(data) {
+			var numf = data.features.length;
+			$('#stat').html(numf);
+			if ( numf == 200 ) $('#stat').html(numf+"+");
+			
+			if ( numf < 50 ) {
+				$('#map').toggleClass("safe", true);
+				$('#map').toggleClass("notbad danger", false);
+			} else if ( numf < 150 ) {
+				$('#map').toggleClass("notbad", true);
+				$('#map').toggleClass("safe danger", false);
+			} else { // bad news!
+				$('#map').toggleClass("danger", true);
+				$('#map').toggleClass("notbad safe", false);
+			}
+			
+			map.removeLayer(crimeslayer);
+			crimeslayer = L.geoJson(null).addTo(map);
+			for (var i = 0; i < data.features.length; i++) {
+				crimeslayer.addData(data.features[i].properties.doc);
+			}
+		});
+	}
+
+	function watchError(err) {
+		alert('Error' + err.code + ' msg: ' + err.message);
+	}
+
+	function stopWatch() {
+		if ( watchID )
+			navigator.geolocation.clearWatch(watchID);
+	}
+
+	var map = L.map('map', {
+		attributionControl: false,
+		center: L.latLng(42.27836038, -71.17784758), //L.latLng(42.36, -71.1), 
+		zoom: 16
+	});
+
+	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+		maxZoom: 20,
+		// attribution: 'Map data &copy; ' +
+		// 	'<a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+		// 	'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+		detectRetina: true,
+		id: 'examples.map-20v6611k'
+	}).addTo(map);
+
+	var geoj = {
+		type: "Feature", 
+		geometry: { "type": "Point", coordinates: [-71.17784758, 42.27836038] }
+	}
+	
+	var crimestyle = {
+		'radius': 8, 
+		'fillColor': '#ff0000', 
+		'fillOpacity': 0.5, 
+		'color': '#ff0000'
+	};
+	crimeslayer = L.geoJson(null, { 
+		atribution: 'IBM | Cloudant', 
+		pointToLayer: function(feature, latlng) {
+			return L.circleMarker(latlng, crimestyle);
+		}
+	}).addTo(map);
+	crimeslayer.addData(geoj);
+	</script>
+	</body>
+</html>
+	
