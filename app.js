@@ -20,6 +20,7 @@ var host = (process.env.VCAP_APP_HOST || 'localhost');
 var port = (process.env.PORT || 3000);
 
 app.listen(port, host); // Start server
+require("cf-deployment-tracker-client").track();
 
 function queryCrimes(req, res) {
     radius = req.query.radius ? parseInt(req.query.radius) : 500;
