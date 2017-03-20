@@ -6,17 +6,17 @@ var app = express();
 var http = require('http');
 var request = require('request');
 
-var dbservice = process.env.DBSERVICE || process.argv[2] || 'https://opendata.mybluemix.net/crimes';
+// var dbservice = process.env.DBSERVICE || process.argv[2] || 'https://opendata.mybluemix.net/crimes';
 
 //-- express web server settings
 app.set('title', 'SafetyPulse');
 
 // set root to return the map location UI
 app.use(express.static(__dirname + '/public'));
-app.get('/querycrimes', queryCrimes);
+// app.get('/querycrimes', queryCrimes);
 //-- end express settings
 
-var host = (process.env.HOST || 'localhost');
+var host = (process.env.VCAP_APP_HOST || 'localhost');
 var port = (process.env.PORT || 3000);
 
 app.listen(port, host); // Start server

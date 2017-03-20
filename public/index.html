@@ -91,10 +91,11 @@
 
 					map.removeLayer(crimeslayer);
 					crimeslayer = L.geoJson(null, {
-						atribution: 'IBM | Cloudant',
+						atribution: 'IBM Watson Data',
 						pointToLayer: function (feature, latlng) {
 							return L.circleMarker(latlng, crimestyle);
-						}
+						}, 
+						onEachFeature: onEachFeature
 					}).addTo(map);
 					for (var i = 0; i < data.rows.length; i++) { //data.rows.length; i++) {
 						crimeslayer.addData(data.rows[i].doc); //data.rows[i].properties.doc);
@@ -106,6 +107,16 @@
 						console.log("Status: " + textstatus);
 					}
 				});
+		}
+
+		function onEachFeature(feature, layer) {
+			if (feature.properties) {
+				let h = '';
+				for (var key in feature.properties) 
+					if (feature.properties.hasOwnProperty(key)) 
+						h += '<b>'+key+': </b>'+feature.properties[key]+'<br>';
+				layer.bindPopup(h);
+			}
 		}
 
 		function startWatch() {
