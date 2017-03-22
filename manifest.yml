@@ -1,6 +1,4 @@
 applications:
-- services:
-  - Twilio2you
   disk_quota: 512M
   host: safetypulse
   name: safetypulse
