@@ -1,7 +1,7 @@
 applications:
+- name: safetypulse
   disk_quota: 512M
   host: safetypulse
-  name: safetypulse
   command: node app.js
   path: .
   domain: mybluemix.net
