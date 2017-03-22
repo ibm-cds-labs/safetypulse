@@ -1,18 +1,61 @@
-SafetyPulse is a mobile app for Boston, MA USA that constantly evaluates the safety of your surroundings to keep you out of trouble areas. The app uses crime statistics combined with your location and the direction you’re heading to gauge the safety level of where you are, and where you’ll soon be. You’ll get a gentle warning when your environment is a little risky, and when you’re heading towards a really high-crime area you get a text message so you can concentrate on where you are, instead of looking at your phone. Set it up once and forget it. SafetyPulse, running in the cloud, will always have your back. Check out the movie here: http://www.rajsingh.org/safetypulse.mp4
+# SafetyPulse 
 
-SafetyPulse is good for more than just monitoring immediate personal safety. Have your kids use it with your mobile phone number and you instantly get notified when they are in a dangerous area. Or you could use it as an aid when scouting a location for a new business. For example, in one of the provided use cases, Navtej is an aspiring restaurant owner. He's a suberb chef, but doesn't understand all the business aspects of starting a restaurant. He could use SafetyPulse when looking at potential spaces for his new restaurant to tell if the area will deter customers from coming. Tourists and joggers will also appreciate this service.
+SafetyPulse is a mobile app that demonstrates how to evaluate crime levels near a mobile device. It works in selected cities around the US, including Boston, San Francisco, Las Vegas, New Orleans and Chicago. The app uses crime statistics combined with your location and the direction you’re heading to gauge the safety level of where you are, and where you’ll soon be. You’ll get a gentle warning when your environment is a little risky, and when you’re heading towards a really high-crime area you get a text message so you can concentrate on where you are, instead of looking at your phone. Set it up once and forget it. SafetyPulse, running in the cloud, will always have your back. Check out the movie here: http://www.rajsingh.org/safetypulse.mp4
 
-SafetyPulse was developed with IBM BlueMix and IBM DevOps Services. It is written in Javascript and uses NodeJS as a middle tier with IBM Cloudant database services with enhanced geospatial query. Safety is determined by querying a database of over 300,000 crimes in Boston over the last 10 years. Crimes occuring nearby are evaluated according to their severity and combined into an aggregate safety rating from 0 to 10, where 10 is really bad. SafetyPulse includes a background service that harvests new crime data from Boston every night and imports it into Cloudant.
+To determine crime rates, SafetyPulse uses open data provided by local government and stored in Cloudant. Crime data is harvested nightly from their open data portals, which leverage a common open data publishing system from Socrata, so any city that uses Socrata could quickly be added to a real SafetyPulse service.
 
-To determine crime rates, SafetyPulse uses open data provided by the City of Boston and stored in Cloudant. Crime data is harvested nightly from the City of Boston's open data service, which leverages a common open data publishing system from Socrata, so any city that uses Socrata could quickly be added to a real SafetyPulse service (note that this demo app only sends SMS messages to the developer). To communicate with users on their mobile devices, SafetyPulse uses Twillio for Bluemix to send safety alerts via SMS.
+## How it works
 
-Bluemix app: http://safetypulse.mybluemix.net/
-DevOps repo: https://hub.jazz.net/project/rrsingh/safetypulse/
-Video: http://www.rajsingh.org/safetypulse.mp4
+The applications use this Bluemix service:
 
-Thanks for evaluating SafetyPulse!
+* a Node.js runtime
 
-Developed by the Cloudant IBM Information Management team:
-Raj Singh (rrsingh@us.ibm.com)
-Norman Barker (nbarker@us.ibm.com)
-Chris Glew (cglew@us.ibm.com)
+
+## Running the apps on Bluemix
+
+The fastest way to deploy this application to Bluemix is to click the **Deploy to Bluemix** button below.
+
+[![Deploy to Bluemix](https://deployment-tracker.mybluemix.net/stats/4ee3b37e7c64eb4c6d961a891dac25a0/button.svg)](https://bluemix.net/deploy?repository=https://github.com/ibm-cds-labs/safetypulse.git)
+
+**Don't have a Bluemix account?** If you haven't already, you'll be prompted to sign up for a Bluemix account when you click the button.  Sign up, verify your email address, then return here and click the the **Deploy to Bluemix** button again. Your new credentials let you deploy to the platform and also to code online with Bluemix and Git. If you have questions about working in Bluemix, find answers in the [Bluemix Docs](https://www.ng.bluemix.net/docs/).
+
+## Running the app locally
+
+Clone this repository then run `npm install` to add the Node.js libraries required to run the app.
+
+Then run: `$ node app.js`
+
+## Privacy Notice
+
+The Crime demos web application includes code to track deployments to Bluemix and other Cloud Foundry platforms. The following information is sent to a [Deployment Tracker](https://github.com/IBM-Bluemix/cf-deployment-tracker-service) service on each deployment:
+
+* Application Name (`application_name`)
+* Space ID (`space_id`)
+* Application Version (`application_version`)
+* Application URIs (`application_uris`)
+
+This data is collected from the `VCAP_APPLICATION` environment variable in IBM Bluemix and other Cloud Foundry platforms. This data is used by IBM to track metrics around deployments of sample applications to IBM Bluemix. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
+
+### Disabling Deployment Tracking
+
+For manual deploys, deployment tracking can be disabled by removing `require("cf-deployment-tracker-client").track();` from the end of the `app.js` main server file.
+
+### License 
+
+Copyright 2016 IBM Cloud Data Services
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+_These applications are for demonstration purposes only and are in no way offering advice for safety purposes._
+
+
